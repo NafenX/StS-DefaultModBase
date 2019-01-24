@@ -31,7 +31,7 @@ public class DefaultRareAttack extends CustomCard {
 
     public static final String ID = defaultmod.DefaultMod.makeID("DefaultRareAttack");
     private static final CardStrings cardStrings = CardCrawlGame.languagePack.getCardStrings(ID);
-    public static final String IMG = DefaultMod.makePath(DefaultMod.DEFAULT_RARE_ATTACK);
+    public static final String IMG = "defaultModResources/images/cards/Attack.png";
 
     public static final String NAME = cardStrings.NAME;
     public static final String DESCRIPTION = cardStrings.DESCRIPTION;
@@ -56,7 +56,7 @@ public class DefaultRareAttack extends CustomCard {
     
     public DefaultRareAttack() {
         super(ID, NAME, IMG, COST, DESCRIPTION, TYPE, COLOR, RARITY, TARGET);
-        this.baseDamage = DAMAGE;
+        baseDamage = DAMAGE;
     }
 
     
@@ -69,23 +69,17 @@ public class DefaultRareAttack extends CustomCard {
         }
         AbstractDungeon.actionManager
         .addToBottom(new com.megacrit.cardcrawl.actions.common.DamageAction(m,
-                new DamageInfo(p, this.damage, this.damageTypeForTurn),
+                new DamageInfo(p, damage, damageTypeForTurn),
                 AbstractGameAction.AttackEffect.NONE));
 
-    }
-
-    // Which card to return when making a copy of this card.
-    @Override
-    public AbstractCard makeCopy() {
-        return new DefaultRareAttack();
     }
 
     //Upgraded stats.
     @Override
     public void upgrade() {
-        if (!this.upgraded) {
-            this.upgradeName();
-            this.upgradeDamage(UPGRADE_PLUS_DMG);
+        if (!upgraded) {
+            upgradeName();
+            upgradeDamage(UPGRADE_PLUS_DMG);
         }
     }
 }

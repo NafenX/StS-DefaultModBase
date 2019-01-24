@@ -29,7 +29,8 @@ public class DefaultAttackWithVariable extends CustomCard {
 
     public static final String ID = defaultmod.DefaultMod.makeID("DefaultAttackWithVariable");
     private static final CardStrings cardStrings = CardCrawlGame.languagePack.getCardStrings(ID);
-    public static final String IMG = DefaultMod.makePath(DefaultMod.DEFAULT_COMMON_ATTACK);
+
+    public static final String IMG = "defaultModResources/images/cards/Attack.png";
 
     public static final String NAME = cardStrings.NAME;
     public static final String DESCRIPTION = cardStrings.DESCRIPTION;
@@ -55,9 +56,9 @@ public class DefaultAttackWithVariable extends CustomCard {
 
     public DefaultAttackWithVariable() {
         super(ID, NAME, IMG, COST, DESCRIPTION, TYPE, COLOR, RARITY, TARGET);
-        this.baseDamage = DAMAGE;
+        baseDamage = DAMAGE;
         
-        this.isMultiDamage = true;
+        isMultiDamage = true;
     }
 
     // Actions the card should do.
@@ -69,24 +70,18 @@ public class DefaultAttackWithVariable extends CustomCard {
         // For each energy, create 1 damage action.
         for (int i = 0; i < effect; i++) {
             AbstractDungeon.actionManager.addToBottom(new com.megacrit.cardcrawl.actions.common.DamageAction(m,
-                new DamageInfo(p, this.damage, this.damageTypeForTurn),
+                new DamageInfo(p, damage, damageTypeForTurn),
                 AbstractGameAction.AttackEffect.FIRE));
         }
-    }
-
-    // Which card to return when making a copy of this card.
-    @Override
-    public AbstractCard makeCopy() {
-        return new DefaultAttackWithVariable();
     }
 
     // Upgraded stats.
     @Override
     public void upgrade() {
-        if (!this.upgraded) {
-            this.upgradeName();
-            this.upgradeDamage(UPGRADE_PLUS_DMG);
-            this.initializeDescription();
+        if (!upgraded) {
+            upgradeName();
+            upgradeDamage(UPGRADE_PLUS_DMG);
+            initializeDescription();
         }
     }
 }

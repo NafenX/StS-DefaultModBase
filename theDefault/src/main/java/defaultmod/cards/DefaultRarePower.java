@@ -1,5 +1,6 @@
 package defaultmod.cards;
 
+import basemod.helpers.BaseModCardTags;
 import com.megacrit.cardcrawl.actions.common.ApplyPowerAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
@@ -28,7 +29,7 @@ public class DefaultRarePower extends CustomCard {
 
     public static final String ID = defaultmod.DefaultMod.makeID("DefaultRarePower");
     private static final CardStrings cardStrings = CardCrawlGame.languagePack.getCardStrings(ID);
-    public static final String IMG = DefaultMod.makePath(DefaultMod.DEFAULT_RARE_POWER);
+    public static final String IMG = "defaultModResources/images/cards/Power.png";
 
     public static final String NAME = cardStrings.NAME;
     public static final String DESCRIPTION = cardStrings.DESCRIPTION;
@@ -54,29 +55,26 @@ public class DefaultRarePower extends CustomCard {
     public DefaultRarePower() {
 
         super(ID, NAME, IMG, COST, DESCRIPTION, TYPE, COLOR, RARITY, TARGET);
-        this.magicNumber = this.baseMagicNumber = MAGIC;
+        magicNumber = baseMagicNumber = MAGIC;
+        
+        this.tags.add(BaseModCardTags.FORM); //Tag your strike, defend and form cards so that they work correctly.
+   
     }
     
     // Actions the card should do.
     @Override
     public void use(AbstractPlayer p, AbstractMonster m) {
         AbstractDungeon.actionManager.addToBottom(new ApplyPowerAction(p, p,
-                new RarePower(p, p, this.magicNumber), this.magicNumber));
-    }
-
-    // Which card to return when making a copy of this card.
-    @Override
-    public AbstractCard makeCopy() {
-        return new DefaultRarePower();
+                new RarePower(p, p, magicNumber), magicNumber));
     }
 
     //Upgraded stats.
     @Override
     public void upgrade() {
-        if (!this.upgraded) {
-            this.upgradeName();
-            this.upgradeBaseCost(UPGRADE_COST);
-            this.initializeDescription();
+        if (!upgraded) {
+            upgradeName();
+            upgradeBaseCost(UPGRADE_COST);
+            initializeDescription();
         }
     }
 }

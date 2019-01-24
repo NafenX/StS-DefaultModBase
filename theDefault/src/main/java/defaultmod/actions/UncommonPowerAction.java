@@ -4,6 +4,7 @@ import com.megacrit.cardcrawl.actions.AbstractGameAction;
 import com.megacrit.cardcrawl.characters.*;
 import com.megacrit.cardcrawl.monsters.*;
 import com.megacrit.cardcrawl.cards.*;
+import com.megacrit.cardcrawl.relics.ChemicalX;
 import com.megacrit.cardcrawl.ui.panels.*;
 import com.megacrit.cardcrawl.dungeons.*;
 import com.megacrit.cardcrawl.core.*;
@@ -25,12 +26,10 @@ public class UncommonPowerAction extends AbstractGameAction {
 
     {
         this.freeToPlayOnce = false;
-        this.energyOnUse = -1;
         this.p = p;
         this.magicNumber = magicNumber;
         this.freeToPlayOnce = freeToPlayOnce;
-        this.duration = Settings.ACTION_DUR_XFAST;
-        this.actionType = ActionType.SPECIAL;
+        actionType = ActionType.SPECIAL;
         this.energyOnUse = energyOnUse;
         this.upgraded = upgraded;
     }
@@ -38,28 +37,28 @@ public class UncommonPowerAction extends AbstractGameAction {
     @Override
     public void update() {
         int effect = EnergyPanel.totalCount;
-        if (this.energyOnUse != -1) {
-            effect = this.energyOnUse;
+        if (energyOnUse != -1) {
+            effect = energyOnUse;
         }
-        if (this.p.hasRelic("Chemical X")) {
+        if (p.hasRelic(ChemicalX.ID)) {
             effect += 2;
-            this.p.getRelic("Chemical X").flash();
+            p.getRelic(ChemicalX.ID).flash();
         }
-        if (this.upgraded) {
+        if (upgraded) {
             ++effect;
         }
         if (effect > 0) {
             for (int i = 0; i < effect; ++i) {
 
-                AbstractDungeon.actionManager.addToBottom(new ApplyPowerAction(this.p, this.p,
-                        new CommonPower(this.p, this.p, this.magicNumber), this.magicNumber,
+                AbstractDungeon.actionManager.addToBottom(new ApplyPowerAction(p, p,
+                        new CommonPower(p, p, magicNumber), magicNumber,
                         AttackEffect.BLUNT_LIGHT));
 
             }
-            if (!this.freeToPlayOnce) {
-                this.p.energy.use(EnergyPanel.totalCount);
+            if (!freeToPlayOnce) {
+                p.energy.use(EnergyPanel.totalCount);
             }
         }
-        this.isDone = true;
+        isDone = true;
     }
 }

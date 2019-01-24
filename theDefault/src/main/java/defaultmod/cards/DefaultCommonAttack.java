@@ -1,5 +1,6 @@
 package defaultmod.cards;
 
+import basemod.helpers.BaseModCardTags;
 import com.megacrit.cardcrawl.actions.AbstractGameAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.DamageInfo;
@@ -29,12 +30,7 @@ public class DefaultCommonAttack extends CustomCard {
     public static final String ID = defaultmod.DefaultMod.makeID("DefaultCommonAttack");
     private static final CardStrings cardStrings = CardCrawlGame.languagePack.getCardStrings(ID);
 
-    // Yes, you totally can use "defaultModResources/images/cards/Attack.png" instead and that would work.
-    // It might be easier to use that while testing.
-    // Using makePath is good practice once you get the hand of things, as it prevents you from
-    // having to change *every single card/file/path* if the image path changes due to updates or your personal preference.
-
-    public static final String IMG = DefaultMod.makePath(DefaultMod.DEFAULT_COMMON_ATTACK);
+    public static final String IMG = "defaultModResources/images/cards/Attack.png";
 
     public static final String NAME = cardStrings.NAME;
     public static final String DESCRIPTION = cardStrings.DESCRIPTION;
@@ -44,7 +40,7 @@ public class DefaultCommonAttack extends CustomCard {
     
     // STAT DECLARATION
 
-    private static final CardRarity RARITY = CardRarity.COMMON;
+    private static final CardRarity RARITY = CardRarity.BASIC;
     private static final CardTarget TARGET = CardTarget.ENEMY;
     private static final CardType TYPE = CardType.ATTACK;
     public static final CardColor COLOR = AbstractCardEnum.DEFAULT_GRAY;
@@ -53,11 +49,22 @@ public class DefaultCommonAttack extends CustomCard {
     private static final int DAMAGE = 7;
     private static final int UPGRADE_PLUS_DMG = 2;
 
+    // Hey want a second damage/magic/block/unique number??? Great!
+    // Go check out DefaultAttackWithVariable and defaultmod.variable.DefaultCustomVariable
+    // that's how you get your own custom variable that you can use for anything you like.
+    // Feel free to explore other mods to see what variabls they personally have and create your own ones.
+
     // /STAT DECLARATION/
 
     public DefaultCommonAttack() {
         super(ID, NAME, IMG, COST, DESCRIPTION, TYPE, COLOR, RARITY, TARGET);
-        this.baseDamage = DAMAGE;
+
+        // Aside from baseDamage/MagicNumber/Block there's also a few more.
+        // Just type this.base and let intelliJ auto complete for you, or, go read up AbstractCard
+
+        baseDamage = DAMAGE;
+        
+        this.tags.add(BaseModCardTags.BASIC_STRIKE); //Tag your strike, defend and form cards so that they work correctly.
     }
 
     // Actions the card should do.
@@ -65,23 +72,17 @@ public class DefaultCommonAttack extends CustomCard {
     public void use(AbstractPlayer p, AbstractMonster m) {
         AbstractDungeon.actionManager
                 .addToBottom(new com.megacrit.cardcrawl.actions.common.DamageAction(m,
-                        new DamageInfo(p, this.damage, this.damageTypeForTurn),
+                        new DamageInfo(p, damage, damageTypeForTurn),
                         AbstractGameAction.AttackEffect.SLASH_HORIZONTAL));
-    }
-
-    // Which card to return when making a copy of this card.
-    @Override
-    public AbstractCard makeCopy() {
-        return new DefaultCommonAttack();
     }
 
     // Upgraded stats.
     @Override
     public void upgrade() {
-        if (!this.upgraded) {
-            this.upgradeName();
-            this.upgradeDamage(UPGRADE_PLUS_DMG);
-            this.initializeDescription();
+        if (!upgraded) {
+            upgradeName();
+            upgradeDamage(UPGRADE_PLUS_DMG);
+            initializeDescription();
         }
     }
 }

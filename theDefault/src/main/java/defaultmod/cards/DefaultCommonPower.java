@@ -29,7 +29,8 @@ public class DefaultCommonPower extends CustomCard {
 
     public static final String ID = defaultmod.DefaultMod.makeID("DefaultCommonPower");
     private static final CardStrings cardStrings = CardCrawlGame.languagePack.getCardStrings(ID);
-    public static final String IMG = DefaultMod.makePath(DefaultMod.DEFAULT_UNCOMMON_POWER);
+
+    public static final String IMG = "defaultModResources/images/cards/Power.png";
 
     public static final String NAME = cardStrings.NAME;
     public static final String DESCRIPTION = cardStrings.DESCRIPTION;
@@ -49,12 +50,17 @@ public class DefaultCommonPower extends CustomCard {
     private static final int MAGIC = 1;
     private static final int UPGRADE_MAGIC = 1;
 
+    // Hey want a second magic/damage/block/unique number??? Great!
+    // Go check out DefaultAttackWithVariable and defaultmod.variable.DefaultCustomVariable
+    // that's how you get your own custom variable that you can use for anything you like.
+    // Feel free to explore other mods to see what variabls they personally have and create your own ones.
+
     // /STAT DECLARATION/
 
 
     public DefaultCommonPower() {
         super(ID, NAME, IMG, COST, DESCRIPTION, TYPE, COLOR, RARITY, TARGET);
-        this.magicNumber = this.baseMagicNumber = MAGIC;
+        magicNumber = baseMagicNumber = MAGIC;
     }
 
 
@@ -62,24 +68,17 @@ public class DefaultCommonPower extends CustomCard {
     @Override
     public void use(AbstractPlayer p, AbstractMonster m) {
         AbstractDungeon.actionManager.addToBottom(new ApplyPowerAction(p, p,
-                new CommonPower(p, p, this.magicNumber), this.magicNumber));
-    }
-
-
-    // Which card to return when making a copy of this card.
-    @Override
-    public AbstractCard makeCopy() {
-        return new DefaultCommonPower();
+                new CommonPower(p, p, magicNumber), magicNumber));
     }
 
     //Upgraded stats.
     @Override
     public void upgrade() {
-        if (!this.upgraded) {
-            this.upgradeName();
-            this.upgradeMagicNumber(UPGRADE_MAGIC);
-            this.rawDescription = UPGRADE_DESCRIPTION;
-            this.initializeDescription();
+        if (!upgraded) {
+            upgradeName();
+            upgradeMagicNumber(UPGRADE_MAGIC);
+            rawDescription = UPGRADE_DESCRIPTION;
+            initializeDescription();
         }
     }
 }

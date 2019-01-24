@@ -1,5 +1,6 @@
 package defaultmod.powers;
 
+import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.localization.PowerStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.badlogic.gdx.graphics.Texture;
@@ -19,17 +20,17 @@ public class RarePower extends AbstractPower {
     private static final PowerStrings powerStrings = CardCrawlGame.languagePack.getPowerStrings(POWER_ID);
     public static final String NAME = powerStrings.NAME;
     public static final String[] DESCRIPTIONS = powerStrings.DESCRIPTIONS;
-    public static final String IMG = DefaultMod.makePath(DefaultMod.RARE_POWER);
+    public static final String IMG = "defaultModResources/images/powers/placeholder_power.png";
 
     public RarePower(final AbstractCreature owner, final AbstractCreature source, final int amount) {
-        this.name = NAME;
-        this.ID = POWER_ID;
+        name = NAME;
+        ID = POWER_ID;
         this.owner = owner;
         this.amount = amount;
-        this.updateDescription();
-        this.type = PowerType.DEBUFF;
-        this.isTurnBased = false;
-        this.img = new Texture(IMG);
+        updateDescription();
+        type = PowerType.DEBUFF;
+        isTurnBased = false;
+        img = ImageMaster.loadImage(IMG);
         this.source = source;
     }
 
@@ -39,20 +40,24 @@ public class RarePower extends AbstractPower {
         AbstractMonster targetMonster = AbstractDungeon.getRandomMonster(); // Declare Target - Random Monster
 
         playCard.freeToPlayOnce = true; //Self Explanatory
-        if (playCard.type != AbstractCard.CardType.POWER)
-            playCard.purgeOnUse = true; // Remove completely on use (Not exhaust)
+
+        if (playCard.type != AbstractCard.CardType.POWER) {
+            playCard.purgeOnUse = true;
+        }
+            // Remove completely on use (Not Exhaust). A note - you don't need the '{}'
+            // in this if statement, as it's just 1 line directly under. You can remove them, if you want.
 
         AbstractDungeon.actionManager.addToBottom(new QueueCardAction(playCard, targetMonster)); // Play the card on the target.
     }
 
     @Override
     public void updateDescription() {
-        if (this.amount == 1) {
-            this.description = DESCRIPTIONS[0] + this.amount + DESCRIPTIONS[1];
+        if (amount == 1) {
+            description = DESCRIPTIONS[0] + amount + DESCRIPTIONS[1];
         }
 
-        else if (this.amount > 1) {
-            this.description = DESCRIPTIONS[0] + this.amount + DESCRIPTIONS[2];
+        else if (amount > 1) {
+            description = DESCRIPTIONS[0] + amount + DESCRIPTIONS[2];
         }
     }
 

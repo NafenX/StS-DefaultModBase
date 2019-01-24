@@ -1,10 +1,8 @@
 package defaultmod.characters;
 
-import java.util.ArrayList;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+import basemod.BaseMod;
+import basemod.abstracts.CustomPlayer;
+import basemod.animations.SpriterAnimation;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.MathUtils;
@@ -17,20 +15,24 @@ import com.megacrit.cardcrawl.core.EnergyManager;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.ScreenShake;
+import com.megacrit.cardcrawl.localization.CharacterStrings;
 import com.megacrit.cardcrawl.screens.CharSelectInfo;
 import com.megacrit.cardcrawl.unlock.UnlockTracker;
-
-import basemod.abstracts.CustomPlayer;
-import basemod.animations.SpriterAnimation;
 import defaultmod.DefaultMod;
 import defaultmod.cards.*;
-import defaultmod.patches.*;
+import defaultmod.patches.AbstractCardEnum;
+import defaultmod.relics.DefaultClickableRelic;
 import defaultmod.relics.PlaceholderRelic;
+import defaultmod.relics.PlaceholderRelic2;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import basemod.animations.AbstractAnimation;
-import basemod.animations.SpriterAnimation;
+import java.util.ArrayList;
+
+import static defaultmod.DefaultMod.*;
 //Wiki-page https://github.com/daviscook477/BaseMod/wiki/Custom-Characters
 //and https://github.com/daviscook477/BaseMod/wiki/Migrating-to-5.0
+//All text (starting description and loadout, anything labeled TEXT[]) can be found in DefaultMod-Character-Strings.json in the resources
 
 public class TheDefault extends CustomPlayer {
     public static final Logger logger = LogManager.getLogger(DefaultMod.class.getName());
@@ -42,11 +44,21 @@ public class TheDefault extends CustomPlayer {
     public static final int MAX_HP = 75;
     public static final int STARTING_GOLD = 99;
     public static final int CARD_DRAW = 9;
-    public static final int ORB_SLOTS = 0;
+    public static final int ORB_SLOTS = 3;
 
     // =============== /BASE STATS/ =================
 
-    
+
+    // =============== STRINGS =================
+
+    private static final String ID = makeID("DefaultCharacter");
+    private static final CharacterStrings characterStrings = CardCrawlGame.languagePack.getCharacterString(ID);
+    private static final String[] NAMES = characterStrings.NAMES;
+    private static final String[] TEXT = characterStrings.TEXT;
+
+    // =============== /STRINGS/ =================
+
+
     // =============== TEXTURES OF BIG ENERGY ORB ===============
 
     public static final String[] orbTextures = {
@@ -60,11 +72,11 @@ public class TheDefault extends CustomPlayer {
             "defaultModResources/images/char/defaultCharacter/orb/layer2d.png",
             "defaultModResources/images/char/defaultCharacter/orb/layer3d.png",
             "defaultModResources/images/char/defaultCharacter/orb/layer4d.png",
-            "defaultModResources/images/char/defaultCharacter/orb/layer5d.png", };
-    
+            "defaultModResources/images/char/defaultCharacter/orb/layer5d.png",};
+
     // =============== /TEXTURES OF BIG ENERGY ORB/ ===============
 
-    
+
     // =============== CHARACTER CLASS START =================
 
     public TheDefault(String name, PlayerClass setClass) {
@@ -73,34 +85,35 @@ public class TheDefault extends CustomPlayer {
                 new SpriterAnimation(
                         "defaultModResources/images/char/defaultCharacter/Spriter/theDefaultAnimation.scml"));
 
-        
+
         // =============== TEXTURES, ENERGY, LOADOUT =================  
 
-        initializeClass(null, // required call to load textures and setup energy/loadout
-                defaultmod.DefaultMod.makePath(defaultmod.DefaultMod.THE_DEFAULT_SHOULDER_1), // campfire pose
-                defaultmod.DefaultMod.makePath(defaultmod.DefaultMod.THE_DEFAULT_SHOULDER_2), // another campfire pose
-                defaultmod.DefaultMod.makePath(defaultmod.DefaultMod.THE_DEFAULT_CORPSE), // dead corpse
+        initializeClass(null, // required call to load textures and setup energy/loadout.
+                // I left these in DefaultMod.java (Ctrl+click them to see where they are, Ctrl+hover to see what they read.)
+                THE_DEFAULT_SHOULDER_1, // campfire pose
+                THE_DEFAULT_SHOULDER_2, // another campfire pose
+                THE_DEFAULT_CORPSE, // dead corpse
                 getLoadout(), 20.0F, -10.0F, 220.0F, 290.0F, new EnergyManager(ENERGY_PER_TURN)); // energy manager
 
         // =============== /TEXTURES, ENERGY, LOADOUT/ =================
 
-        
+
         // =============== ANIMATIONS =================  
 
-        this.loadAnimation(
-                defaultmod.DefaultMod.makePath(defaultmod.DefaultMod.THE_DEFAULT_SKELETON_ATLAS),
-                defaultmod.DefaultMod.makePath(defaultmod.DefaultMod.THE_DEFAULT_SKELETON_JSON),
+        loadAnimation(
+                THE_DEFAULT_SKELETON_ATLAS,
+                THE_DEFAULT_SKELETON_JSON,
                 1.0f);
-        AnimationState.TrackEntry e = this.state.setAnimation(0, "animation", true);
+        AnimationState.TrackEntry e = state.setAnimation(0, "animation", true);
         e.setTime(e.getEndTime() * MathUtils.random());
 
         // =============== /ANIMATIONS/ =================
 
-        
+
         // =============== TEXT BUBBLE LOCATION =================
 
-        this.dialogX = (this.drawX + 0.0F * Settings.scale); // set location for text bubbles
-        this.dialogY = (this.drawY + 220.0F * Settings.scale); // you can just copy these values
+        dialogX = (drawX + 0.0F * Settings.scale); // set location for text bubbles
+        dialogY = (drawY + 220.0F * Settings.scale); // you can just copy these values
 
         // =============== /TEXT BUBBLE LOCATION/ =================
 
@@ -108,12 +121,10 @@ public class TheDefault extends CustomPlayer {
 
     // =============== /CHARACTER CLASS END/ =================
 
-    
     // Starting description and loadout
     @Override
     public CharSelectInfo getLoadout() {
-        return new CharSelectInfo("The Default",
-                "Placeholder description text. NL " + "Second line of description text. ",
+        return new CharSelectInfo(NAMES[0], TEXT[0],
                 STARTING_HP, MAX_HP, ORB_SLOTS, STARTING_GOLD, CARD_DRAW, this, getStartingRelics(),
                 getStartingDeck(), false);
     }
@@ -136,9 +147,10 @@ public class TheDefault extends CustomPlayer {
         retVal.add(DefaultCommonPower.ID);
         retVal.add(DefaultUncommonPower.ID);
         retVal.add(DefaultRarePower.ID);
-        
-        retVal.add(DefaultAttackWithVariable.ID);
 
+        retVal.add(DefaultAttackWithVariable.ID);
+        retVal.add(DefaultSecondMagicNumberSkill.ID);
+        retVal.add(OrbSkill.ID);
         return retVal;
     }
 
@@ -147,8 +159,12 @@ public class TheDefault extends CustomPlayer {
         ArrayList<String> retVal = new ArrayList<>();
 
         retVal.add(PlaceholderRelic.ID);
+        retVal.add(PlaceholderRelic2.ID);
+        retVal.add(DefaultClickableRelic.ID);
 
         UnlockTracker.markRelicAsSeen(PlaceholderRelic.ID);
+        UnlockTracker.markRelicAsSeen(PlaceholderRelic2.ID);
+        UnlockTracker.markRelicAsSeen(DefaultClickableRelic.ID);
 
         return retVal;
     }
@@ -196,9 +212,8 @@ public class TheDefault extends CustomPlayer {
     // Should return class name as it appears in run history screen.
     @Override
     public String getLocalizedCharacterName() {
-        return "The Default";
+        return NAMES[0];
     }
-
     //Which card should be obtainable from the Match and Keep event?
     @Override
     public AbstractCard getStartCardForEvent() {
@@ -208,13 +223,13 @@ public class TheDefault extends CustomPlayer {
     // The class name as it appears next to your player name in-game
     @Override
     public String getTitle(AbstractPlayer.PlayerClass playerClass) {
-        return "the Default";
+        return NAMES[1];
     }
 
-    // Should return a new instance of your character, sending this.name as its name parameter.
+    // Should return a new instance of your character, sending name as its name parameter.
     @Override
     public AbstractPlayer newInstance() {
-        return new TheDefault(this.name, this.chosenClass);
+        return new TheDefault(name, chosenClass);
     }
 
     // Should return a Color object to be used to color the miniature card images in run history.
@@ -226,17 +241,17 @@ public class TheDefault extends CustomPlayer {
     // Should return a Color object to be used as screen tint effect when your
     // character attacks the heart.
     @Override
-    public Color getSlashAttackColor() {
-        return defaultmod.DefaultMod.DEFAULT_GRAY;
-    }
+    public Color getSlashAttackColor() { return defaultmod.DefaultMod.DEFAULT_GRAY; }
 
     // Should return an AttackEffect array of any size greater than 0. These effects
     // will be played in sequence as your character's finishing combo on the heart.
     // Attack effects are the same as used in DamageAction and the like.
     @Override
     public AbstractGameAction.AttackEffect[] getSpireHeartSlashEffect() {
-        return new AbstractGameAction.AttackEffect[] {
-                AbstractGameAction.AttackEffect.BLUNT_HEAVY };
+        return new AbstractGameAction.AttackEffect[]{
+                AbstractGameAction.AttackEffect.BLUNT_HEAVY,
+                AbstractGameAction.AttackEffect.BLUNT_HEAVY,
+                AbstractGameAction.AttackEffect.BLUNT_HEAVY};
     }
 
     // Should return a string containing what text is shown when your character is
@@ -244,7 +259,7 @@ public class TheDefault extends CustomPlayer {
     // core to its maximum..."
     @Override
     public String getSpireHeartText() {
-        return "You touch the heart.";
+        return TEXT[1];
     }
 
     // The vampire events refer to the base game characters as "brother", "sister",
@@ -252,7 +267,7 @@ public class TheDefault extends CustomPlayer {
     // the full text that will be displayed as the first screen of the vampires event.
     @Override
     public String getVampireText() {
-        return "Navigating an unlit street, you come across several hooded figures in the midst of some dark ritual. As you approach, they turn to you in eerie unison. The tallest among them bares fanged teeth and extends a long, pale hand towards you. NL ~\"Join~ ~us~ ~basic~ ~one,~ ~and~ ~feel~ ~the~ ~warmth~ ~of~ ~the~ ~Spire.\"~";
+        return TEXT[2];
     }
 
 }
